@@ -69,7 +69,7 @@ public class SeedController {
 
     /** GET method for querying running tasks for the provided layer */
     @RequestMapping(
-        value = "/seed/{layer}.json",
+        value = "/seed/{layer:.+}.json",
         method = RequestMethod.GET,
         produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE}
     )
@@ -78,7 +78,7 @@ public class SeedController {
     }
 
     /** GET method for displaying the GeoWebCache UI form. */
-    @RequestMapping(value = "/seed/{layer}", method = RequestMethod.GET)
+    @RequestMapping(value = "/seed/{layer:.+}", method = RequestMethod.GET)
     public ResponseEntity<?> doFormGet(HttpServletRequest request, @PathVariable String layer) {
         return formService.handleGet(request, layer);
     }
@@ -111,7 +111,9 @@ public class SeedController {
                 new BufferedReader(new InputStreamReader(inputStream))
                         .lines()
                         .collect(Collectors.joining("\n"));
-        if (layer.indexOf(".") == -1) {
+        final int indexExtension = layer.indexOf(".", layer.indexOf(":"));
+
+        if (indexExtension == -1) {
             try {
                 // If Content-Type is not application/x-www-urlencoded, the form contents will still
                 // be in the body.
@@ -128,8 +130,8 @@ public class SeedController {
             }
 
         } else {
-            String extension = layer.substring(layer.indexOf(".") + 1);
-            String layerName = layer.substring(0, layer.indexOf("."));
+            String extension = layer.substring(indexExtension + 1);
+            String layerName = layer.substring(0, indexExtension);
             return seedService.doSeeding(request, layerName, extension, body);
         }
     }
