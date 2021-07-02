@@ -168,6 +168,17 @@ public class MetaTile implements TileResponseReceiver {
 
         this.metaTileWidth = metaX * gridSubset.getTileWidth();
         this.metaTileHeight = metaY * gridSubset.getTileHeight();
+        if (log.isDebugEnabled()) {
+            log.debug(
+                    String.format(
+                            "Size MetaTile [%d,%d] based on metaXY [%d,%d] with tileSize [%d,%d]",
+                            metaTileWidth,
+                            metaTileHeight,
+                            metaX,
+                            metaY,
+                            gridSubset.getTileWidth(),
+                            gridSubset.getTileHeight()));
+        }
 
         double widthRelDelta = ((1.0 * metaTileWidth + gutterConfig) / metaTileWidth) - 1.0;
         double heightRelDelta = ((1.0 * metaTileHeight + gutterConfig) / metaTileHeight) - 1.0;
@@ -197,6 +208,9 @@ public class MetaTile implements TileResponseReceiver {
             metaTileHeight += gutterConfig;
             gutter[3] = gutterConfig;
             metaBbox.setMaxY(metaBbox.getMaxY() + coordHeightDelta);
+        }
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Final metaTileSize [%d,%d]", metaTileWidth, metaTileHeight));
         }
     }
 
